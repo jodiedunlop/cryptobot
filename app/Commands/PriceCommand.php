@@ -34,7 +34,8 @@ class PriceCommand extends AbstractCommand
             $userInfo = $bot->getUser()->getInfo();
             $priceRequest->parseDate($date, $userInfo['tz'] ?? null);
         } catch (\Exception $e) {
-            $this->bot->reply('Your date makes no sense to me.'.$e->getMessage());
+            Log::error("Unable to parse date: {$date}: ".$e->getMessage());
+            $this->bot->reply('Your date makes no sense to me.');
             return;
         }
         $bot->reply('One sec ...');
