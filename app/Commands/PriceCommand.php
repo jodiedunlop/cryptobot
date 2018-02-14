@@ -7,6 +7,7 @@ use App\Models\Coin;
 use App\Models\VO\PriceRequest;
 use App\Util\PriceUtil;
 use BotMan\BotMan\BotMan;
+use Illuminate\Support\Facades\Log;
 
 class PriceCommand extends AbstractCommand
 {
@@ -17,7 +18,9 @@ class PriceCommand extends AbstractCommand
      */
     public function __invoke(BotMan $bot, string $symbol, $date = null): void
     {
+
         $symbol = PriceUtil::sanitizeSymbol($symbol);
+        Log::info("Price command for symbol:{$symbol}, date:{$date}");
         try {
             /** @var Coin $coin */
             $coin = Coin::where('symbol', $symbol)->firstOrFail();
@@ -31,7 +34,7 @@ class PriceCommand extends AbstractCommand
             $userInfo = $bot->getUser()->getInfo();
             $priceRequest->parseDate($date, $userInfo['tz'] ?? null);
         } catch (\Exception $e) {
-            $this->bot->reply('Your date makes no sense to me.');
+            $this->bot->reply('Your date makes no sense to me.'.$e->getMessage());
             return;
         }
         $bot->reply('One sec ...');
