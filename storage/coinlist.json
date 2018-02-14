@@ -1,0 +1,38 @@
+{
+  "NOBL": {
+    "Id": "4577",
+    "Url": "/coins/nobl/overview",
+    "ImageUrl": "/media/19833/nobl.png",
+    "Name": "NOBL",
+    "Symbol": "NOBL",
+    "CoinName": "NobleCoin",
+    "FullName": "NobleCoin (NOBL)",
+    "Algorithm": "Scrypt",
+    "ProofType": "PoW",
+    "FullyPremined": "0",
+    "TotalCoinSupply": "15000000000",
+    "PreMinedValue": "N/A",
+    "TotalCoinsFreeFloat": "N/A",
+    "SortOrder": "173",
+    "Sponsored": false,
+    "IsTrading": true
+  },
+  "NRS": {
+    "Id": "4578",
+    "Url": "/coins/nrs/overview",
+    "ImageUrl": "/media/19834/nrs.png",
+    "Name": "NRS",
+    "Symbol": "NRS",
+    "CoinName": "NoirShares",
+    "FullName": "NoirShares (NRS)",
+    "Algorithm": "Scrypt",
+    "ProofType": "PoW/PoS",
+    "FullyPremined": "0",
+    "TotalCoinSupply": "5000000",
+    "PreMinedValue": "N/A",
+    "TotalCoinsFreeFloat": "N/A",
+    "SortOrder": "174",
+    "Sponsored": false,
+    "IsTrading": true
+  }
+}
