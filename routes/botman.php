@@ -13,6 +13,6 @@ $botman->hears('price ([\w]+)(?:\s+(.+))?', \App\Commands\PriceCommand::class);
 //    $bot->startConversation(new ExampleConversation());
 //});
 
-$botman->fallback(function($bot) {
-    $bot->reply("Sorry, I'm not that smart.");
-});
+//$botman->fallback(function($bot) {
+//    $bot->reply("Sorry, I'm not that smart.");
+//});
