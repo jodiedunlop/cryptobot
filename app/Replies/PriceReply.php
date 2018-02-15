@@ -3,6 +3,7 @@ namespace App\Replies;
 
 use App\Models\VO\PriceRequest;
 use App\Services\CoinDataService;
+use App\Util\PriceUtil;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
@@ -36,9 +37,9 @@ class PriceReply extends AbstractReply
         // Build a reply message
         $text = "The price of {$coin->full_name} ";
         if ($priceRequest->hasDate()) {
-            $text .= 'at ' . $price->getDate()->toDateTimeString() . " was ";
+            $text .= 'at ' . $price->getDate()->toDateTimeString() . ' was ';
         } else {
-            $text .= "is ";
+            $text .= 'is ';
         }
         $text .= "*\${$price->getPrice('USD')}USD*";
 
@@ -49,7 +50,7 @@ class PriceReply extends AbstractReply
             }
             $fields[] = [
                 'title' => $key,
-                'value' => (float)$value,
+                'value' => !empty($value) ? PriceUtil::formatDecimal($value) : '0.00',
                 'short' => true,
             ];
         }

@@ -48,7 +48,7 @@ class PriceCommand extends AbstractCommand
         $coin = null;
 
         foreach (['symbol', 'name'] as $field) {
-            if (($coin = Coin::where($field, $symbol)->first()) !== null) {
+            if (($coin = Coin::where($field, 'like', $symbol)->first()) !== null) {
                 break;
             }
         }
