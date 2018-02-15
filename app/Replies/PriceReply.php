@@ -44,9 +44,12 @@ class PriceReply extends AbstractReply
 
         $fields = [];
         foreach ($price->getPrices() as $key => $value) {
+            if ($coin->symbol() === $key) {
+                continue;
+            }
             $fields[] = [
                 'title' => $key,
-                'value' => $value,
+                'value' => (float)$value,
                 'short' => true,
             ];
         }

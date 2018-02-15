@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Exceptions\CoinLookupException;
 use App\Jobs\PriceReplyJob;
 use App\Models\Coin;
 use App\Models\VO\PriceRequest;
@@ -22,10 +23,9 @@ class PriceCommand extends AbstractCommand
         $symbol = PriceUtil::sanitizeSymbol($symbol);
         Log::info("Price command for symbol:{$symbol}, date:{$date}");
         try {
-            /** @var Coin $coin */
-            $coin = Coin::where('symbol', $symbol)->firstOrFail();
+            $coin = $this->findCoin($symbol);
         } catch (\Exception $e) {
-            $this->bot->reply("Invalid coin symbol $symbol");
+            $this->bot->reply($e->getMessage());
             return;
         }
 
@@ -41,5 +41,22 @@ class PriceCommand extends AbstractCommand
         $bot->reply('One sec ...');
         $bot->types();
         PriceReplyJob::dispatch($bot, $priceRequest);
+    }
+
+    protected function findCoin(string $symbol): Coin
+    {
+        $coin = null;
+
+        foreach (['symbol', 'name'] as $field) {
+            if (($coin = Coin::where($field, $symbol)->first()) !== null) {
+                break;
+            }
+        }
+
+        if ($coin === null) {
+           throw new CoinLookupException("Can't find that coin: {$symbol}");
+        }
+
+        return $coin;
     }
 }
