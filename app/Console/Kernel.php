@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
 	$schedule->command('coins:update')->hourly();
 
 	// Update prices
-	$schedule->command('coins:update-prices')->everyMinute()->withoutOverlapping();
+	$schedule->command('coins:update-prices')->everyFiveMinutes()->withoutOverlapping();
     }
 
     /**
