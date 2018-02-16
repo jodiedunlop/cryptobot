@@ -23,3 +23,9 @@ Artisan::command('coins:update', function () {
     $numCoinsUpdated = $service->updateCoinList();
     $this->comment = "Updated $numCoinsUpdated coins";
 })->describe('Fetch and update the coins list');
+
+Artisan::command('coins:update-prices', function () {
+    $service = new \App\Services\CoinDataService();
+    $numCoinsUpdated = $service->updateCoinPrices();
+    $this->comment = "Updated $numCoinsUpdated coins";
+})->describe('Fetch and update the coins list');

@@ -139,6 +139,7 @@ class CoinDataService
         ])->json();
 
         $sourced_at = new Carbon(null, 'UTC');
+        $numCoinsUpdated = 0;
         foreach ($data as $coinData) {
             /** @var Coin $coin */
             $coin = Coin::findBySymbol($coinData['symbol']);
@@ -172,7 +173,9 @@ class CoinDataService
                     Log::debug("Coin price added to {$coin->symbol}", $coinPrice->toArray());
                 }
             }
+            $numCoinsUpdated++;
         }
+        return $numCoinsUpdated;
     }
 
     protected function getPriceRequestCacheKey($prefix, PriceRequest $priceRequest)
