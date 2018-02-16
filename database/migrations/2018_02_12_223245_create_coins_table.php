@@ -34,17 +34,26 @@ class CreateCoinsTable extends Migration
             $table->string('remote_id', 40);
             $table->string('name', 100);
             $table->string('full_name', 255);
-            $table->string('symbol', 100);
+            $table->string('symbol', 40);
             $table->string('image_url')->nullable();
             $table->string('info_url')->nullable();
-            $table->string('algorithm', 100);
-            $table->string('proof_type', 100);
-            $table->unsignedBigInteger('total_supply')->nullable();
-            $table->boolean('is_premined');
-            $table->string('premined_value', 100);
-            $table->string('total_free_float', 100);
-            $table->boolean('is_trading');
+            $table->string('algorithm', 100)->nullable();
+            $table->string('proof_type', 100)->nullable();
+            $table->unsignedBigInteger('total_supply')->default(0); // CMC
+            $table->unsignedBigInteger('available_supply')->default(0); // CMC
+            $table->unsignedBigInteger('max_supply')->default(0); // CMC
+            $table->unsignedBigInteger('volume_usd_24h')->default(0); // CMC
+            $table->unsignedBigInteger('market_cap_usd')->default(0); // CMC
+            $table->decimal('percent_change_1h')->default(0); // CMC
+            $table->decimal('percent_change_24h')->default(0); // CMC
+            $table->decimal('percent_change_7d')->default(0); // CMC
+            $table->boolean('is_premined')->nullable();
+            $table->string('premined_value', 100)->nullable();
+            $table->string('total_free_float', 100)->nullable();
+            $table->boolean('is_trading')->default(true);
             $table->unsignedInteger('sort_order')->default(0);
+            $table->unsignedInteger('rank')->default(0);
+            $table->timestamp('sourced_at')->nullable();
             $table->timestamps();
 
             $table->unique('remote_id');
