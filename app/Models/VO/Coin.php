@@ -27,11 +27,6 @@ class Coin
         return $this->props['symbol'];
     }
 
-    public function model(): \App\Models\Coin
-    {
-
-    }
-
     public function thumbUrl(): string
     {
         return $this->props['thumb_url'] ??

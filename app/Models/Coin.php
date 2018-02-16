@@ -60,7 +60,7 @@ class Coin extends Model
         return $this->hasMany(CoinPrice::class);
     }
 
-    public function latestPrices(): Builder
+    public function latestPrices()
     {
         // Get prices which have the same source date
         return $this->prices()->where('sourced_at', $this->sourced_at);
@@ -83,7 +83,7 @@ class Coin extends Model
         return $this->priceMap($this->latestPrices());
     }
 
-    public function priceMap(Builder $priceQuery)
+    public function priceMap($priceQuery)
     {
         $map = [];
         foreach ($priceQuery->get() as $coinPrice) {
