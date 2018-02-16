@@ -68,8 +68,13 @@ class PriceReply extends AbstractReply
                     'ts' => $price->getTimestamp(),
                 ],
                 [
-                    'title' => 'Current price change',
+                    'color' => $coin->percent_change_1h < 0 ? 'danger' : 'good',
                     'fields' => [
+                        [
+                            'title' => 'Rank',
+                            'value' => '#'.$coin->rank,
+                            'short' => true,
+                        ],
                         [
                             'title' => '1 Hour',
                             'value' => $this->formatPercentage($coin->percent_change_1h),
