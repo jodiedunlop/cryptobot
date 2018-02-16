@@ -43,7 +43,7 @@ class PriceReply extends AbstractReply
         } else {
             $text .= 'is ';
         }
-        $text .= '*$' . PriceUtil::formatDecimal($price->getPrice('USD')) . ' USD';
+        $text .= '*$' . PriceUtil::formatDecimal($price->getPrice('USD')) . '* USD';
 
         $fields = [];
         foreach ($price->getPrices() as $key => $value) {
