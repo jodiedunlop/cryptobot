@@ -169,6 +169,7 @@ class CoinDataService
                     $coinPrice = $coin->prices()->create([
                         'currency_symbol' => PriceUtil::sanitizeSymbol($currencySymbol),
                         'price' => $coinData[$priceKey],
+			'sourced_at' => $sourced_at,
                     ]);
                     Log::debug("Coin price added to {$coin->symbol}", $coinPrice->toArray());
                 }
