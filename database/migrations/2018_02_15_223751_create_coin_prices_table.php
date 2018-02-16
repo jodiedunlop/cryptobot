@@ -15,6 +15,7 @@ class CreateCoinPricesTable extends Migration
     {
         Schema::create('coin_prices', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('coin_id');
             $table->unsignedInteger('market_id')->default(0);
             $table->string('currency_symbol', 40); // Currency pair
             $table->decimal('price', 24, 8)->nullable();
