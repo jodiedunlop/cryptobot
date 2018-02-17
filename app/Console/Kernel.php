@@ -24,8 +24,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+
+	// Update coin list
+	$schedule->command('coins:update')->hourly();
+
+	// Update prices
+	$schedule->command('coins:update-prices')->everyFiveMinutes()->withoutOverlapping();
     }
 
     /**

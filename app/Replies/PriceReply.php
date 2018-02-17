@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Replies;
 
 use App\Models\VO\PriceRequest;
@@ -7,16 +8,17 @@ use App\Util\PriceUtil;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use function GuzzleHttp\Promise\promise_for;
 use Illuminate\Support\Facades\Log;
 
 class PriceReply extends AbstractReply
 {
     /** @var BotMan */
     protected $bot;
-    
+
     /** @var PriceRequest */
     protected $priceRequest;
-    
+
     public function __construct(BotMan $bot)
     {
         $this->bot = $bot;
@@ -41,7 +43,7 @@ class PriceReply extends AbstractReply
         } else {
             $text .= 'is ';
         }
-        $text .= "*\${$price->getPrice('USD')}USD*";
+        $text .= '*$' . PriceUtil::formatDecimal($price->getPrice('USD')) . '* USD';
 
         $fields = [];
         foreach ($price->getPrices() as $key => $value) {
@@ -55,7 +57,7 @@ class PriceReply extends AbstractReply
             ];
         }
 
-        Log::info('Sending reply: '.$text);
+        Log::info('Sending reply: ' . $text);
         $this->bot->reply($text, [
             'attachments' => json_encode([
                 [
@@ -65,7 +67,41 @@ class PriceReply extends AbstractReply
                     'thumb_url' => $coin->thumbUrl(),
                     'ts' => $price->getTimestamp(),
                 ],
+                [
+                    'color' => $coin->percent_change_1h < 0 ? 'danger' : 'good',
+                    'fields' => [
+                        [
+                            'title' => 'Rank',
+                            'value' => '#'.$coin->rank,
+                            'short' => true,
+                        ],
+                        [
+                            'title' => '1 Hour',
+                            'value' => $this->formatPercentage($coin->percent_change_1h),
+                            'short' => true,
+                        ],
+                        [
+                            'title' => '24 Hours',
+                            'value' => $this->formatPercentage($coin->percent_change_24h),
+                            'short' => true,
+                        ],
+                        [
+                            'title' => '7 Days',
+                            'value' => $this->formatPercentage($coin->percent_change_7d),
+                            'short' => true,
+                        ],
+                    ]
+                ]
             ])
         ]);
+
+    }
+
+    protected function formatPercentage($val): string
+    {
+        return sprintf('%s %s',
+            $val < 0 ? ':small_red_triangle_down:' : ':arrow_up_small:',
+            PriceUtil::formatPercentage($val)
+        );
     }
 }

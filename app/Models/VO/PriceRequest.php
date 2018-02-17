@@ -92,6 +92,16 @@ class PriceRequest
         return $this->date;
     }
 
+    public function getUtcDate(): ?Carbon
+    {
+        $utcDate = null;
+        if (($date = $this->getDate()) !== null) {
+            $utcDate = Carbon::createFromTimestampUTC($date->timestamp);
+        }
+
+        return $utcDate;
+    }
+
     /**
      * @param Carbon $date
      * @return $this

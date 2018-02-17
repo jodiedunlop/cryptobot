@@ -14,16 +14,14 @@ class PriceCommand extends AbstractCommand
 {
     /**
      * @param BotMan $bot
-     * @param string $symbol
+     * @param string $symbol Symbol or name of coin
      * @param string|null|mixed $date
      */
     public function __invoke(BotMan $bot, string $symbol, $date = null): void
     {
-
-        $symbol = PriceUtil::sanitizeSymbol($symbol);
         Log::info("Price command for symbol:{$symbol}, date:{$date}");
         try {
-            $coin = $this->findCoin($symbol);
+            $coin = Coin::findOrFail($symbol);
         } catch (\Exception $e) {
             $this->bot->reply($e->getMessage());
             return;
@@ -41,22 +39,5 @@ class PriceCommand extends AbstractCommand
         $bot->reply('One sec ...');
         $bot->types();
         PriceReplyJob::dispatch($bot, $priceRequest);
-    }
-
-    protected function findCoin(string $symbol): Coin
-    {
-        $coin = null;
-
-        foreach (['symbol', 'name'] as $field) {
-            if (($coin = Coin::where($field, 'like', $symbol)->first()) !== null) {
-                break;
-            }
-        }
-
-        if ($coin === null) {
-           throw new CoinLookupException("Can't find that coin: {$symbol}");
-        }
-
-        return $coin;
     }
 }
