@@ -28,38 +28,38 @@ class GainersReply extends AbstractReply
 
     public function send(GainersRequest $request): void
     {
-        $orderByField = null;
+        $changeField = null;
         switch ($request->getPeriod()) {
             case GainersRequest::PERIOD_1HR:
-                $orderByField = 'percent_change_1h';
+                $changeField = 'percent_change_1h';
                 break;
             case GainersRequest::PERIOD_24HRS:
-                $orderByField = 'percent_change_24h';
+                $changeField = 'percent_change_24h';
                 break;
             case GainersRequest::PERIOD_7DAYS:
-                $orderByField = 'percent_change_7d';
+                $changeField = 'percent_change_7d';
                 break;
             default:
-                $orderByField = 'percent_change_24h';
+                $changeField = 'percent_change_24h';
                 break;
         }
 
         /** @var Coin[] $coinList */
-        $coinList = Coin::orderBy($orderByField, 'DESC')
+        $coinList = Coin::orderBy($changeField, 'DESC')
             ->where('rank', '>', $request->getMinRank())
             ->where('rank', '<', $request->getMaxRank())
             ->limit($request->getLimit());
 
-        $text = 'Gainers over the '.$request->getPeriodDescription()."\n";
+        $text = 'Gainers over the '.$request->getPeriodDescription().":\n";
         foreach ($coinList->get() as $coin) {
             $text .=
-                sprintf('*%d.* %s - `$%s` `%sBTC` %s%s  Supply:`%s` | Cap:`$%s`',
+                sprintf('*#%d* %s - `$%s` `%sBTC` %s%s  Supply:`%s` | Cap:`$%s`',
                     $coin->rank,
                     $coin->full_name,
                     PriceUtil::formatDecimal($coin->priceFor('usd')),
                     PriceUtil::formatDecimal($coin->priceFor('btc')),
-                    $coin->percent_change_24h < 0 ? '▼' : '▲',
-                    PriceUtil::formatPercentage($coin->percent_change_24h),
+                    $coin->$changeField < 0 ? '▼' : '▲',
+                    PriceUtil::formatPercentage($coin->$changeField),
                     PriceUtil::formatLargeAmount($coin->total_supply),
                     PriceUtil::formatLargeAmount($coin->market_cap_usd)
                 ) . "\n";
