@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCoinPricesTable extends Migration
+class CreatePortfolioCoinsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,12 @@ class CreateCoinPricesTable extends Migration
      */
     public function up()
     {
-        Schema::create('coin_prices', function (Blueprint $table) {
+        Schema::create('portfolio_coins', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('portfolio_id');
             $table->unsignedInteger('coin_id');
-            $table->unsignedInteger('market_id')->default(0);
-            $table->string('currency_symbol', 40); // Currency pair
-            $table->decimal('price', 24, 8)->nullable();
-            $table->timestamp('sourced_at')->nullable();
+            $table->decimal('qty', 24, 8)->default(0);
             $table->timestamps();
-
-            $table->index('coin_id');
         });
     }
 
@@ -33,6 +29,6 @@ class CreateCoinPricesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('coin_prices');
+        Schema::dropIfExists('portfolio_coins');
     }
 }

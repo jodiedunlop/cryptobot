@@ -9,12 +9,16 @@ use App\Models\VO\Price;
 use App\Models\VO\PriceRequest;
 use App\Util\PriceUtil;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Zttp\Zttp;
 
 class CoinDataService
 {
+    public const COIN_LIST_URL = 'https://www.cryptocompare.com/api/data/coinlist/';
+    //public const COIN_LIST_URL = ''https://min-api.cryptocompare.com/data/all/coinlist';
+
     public function currentPrice(PriceRequest $priceRequest): Price
     {
         Log::debug("Looking up current price for {$priceRequest->symbol()}");
@@ -102,27 +106,20 @@ class CoinDataService
     public function updateCoinList(): int
     {
         Log::info('Updating coin list');
-        $data = Zttp::get('https://min-api.cryptocompare.com/data/all/coinlist')->json();
-        if (!isset($data['Response']) || $data['Response'] !== 'Success') {
+
+        $data = Cache::remember('coin-list', 5, function() {
+            return Zttp::get(self::COIN_LIST_URL)->json();
+        });
+
+        if (!isset($data['Data'])) {
+            Log::error('Bad coin list response from cryptocompare:', $data);
+            Cache::forget('coin-list');
             throw new CoinUpdateException($data['Message'] ?? 'Payload did not contain a Response=Success parameter');
         }
 
         $coinsUpdated = 0;
         foreach ($data['Data'] as $key => $val) {
-            Coin::updateOrCreate(['remote_id' => 'cc:' . $val['Id']], [
-                'name' => $val['CoinName'],
-                'full_name' => $val['FullName'],
-                'symbol' => PriceUtil::sanitizeSymbol($val['Symbol']),
-                'image_url' => !empty($val['ImageUrl']) ? $data['BaseImageUrl'] . $val['ImageUrl'] : null,
-                'info_url' => !empty($val['Url']) ? $data['BaseLinkUrl'] . $val['Url'] : null,
-                'algorithm' => $val['Algorithm'] ?? 'N/A',
-                'proof_type' => $val['ProofType'] ?? 'N/A',
-//                'total_supply' => $val['TotalCoinSupply'] !== 'N/A' ? (int)$val['TotalCoinSupply'] : null,
-                'is_premined' => $val['FullyPremined'] === '1',
-                'premined_value' => $val['PreMinedValue'] ?? 'N/A',
-                'total_free_float' => $val['TotalCoinsFreeFloat'] ?? 'N/A',
-                'is_trading' => $val['IsTrading'] === true,
-            ]);
+            Coin::updateOrCreate(['cc_id' => (int)$val['Id']], $this->coinCreationData($val));
         }
         Log::info("Updated {$coinsUpdated} coins");
 
@@ -141,8 +138,7 @@ class CoinDataService
         $sourced_at = new Carbon(null, 'UTC');
         $numCoinsUpdated = 0;
         foreach ($data as $coinData) {
-            /** @var Coin $coin */
-            $coin = Coin::findBySymbol($coinData['symbol']);
+            $coin = $this->lookupCoinFromCmcData($coinData);
             if ($coin === null) {
                 Log::warning('Cannot update coin price, not in database:', $coinData);
                 continue;
@@ -150,6 +146,7 @@ class CoinDataService
             Log::debug("Updating coin data and prices for {$coin->symbol}", $coinData);
 
             // Update coin info
+            $coin->cmc_id = (string)$coinData['id'];
             $coin->rank = (int)$coinData['rank'];
             $coin->total_supply = !empty($coinData['total_supply']) ? (int)$coinData['total_supply'] : 0;
             $coin->available_supply = !empty($coinData['available_supply']) ? (int)$coinData['available_supply'] : 0;
@@ -169,7 +166,7 @@ class CoinDataService
                     $coinPrice = $coin->prices()->create([
                         'currency_symbol' => PriceUtil::sanitizeSymbol($currencySymbol),
                         'price' => $coinData[$priceKey],
-			'sourced_at' => $sourced_at,
+                        'sourced_at' => $sourced_at,
                     ]);
                     Log::debug("Coin price added to {$coin->symbol}", $coinPrice->toArray());
                 }
@@ -182,5 +179,87 @@ class CoinDataService
     protected function getPriceRequestCacheKey($prefix, PriceRequest $priceRequest)
     {
         return sprintf('%s_%s_%s', $prefix, $priceRequest->symbol(), $priceRequest->getTimestamp());
+    }
+
+    /**
+     * Lookup Coin model from CoinMarketCap coin data
+     * @param array $coinData
+     * @return Coin|null
+     */
+    protected function lookupCoinFromCmcData(array $coinData): ?Coin
+    {
+        // Try and find coin by ID first
+        $coin = Coin::where('cmc_id', $coinData['id'])->first();
+        if ($coin !== null) {
+            return $coin;
+        }
+
+        // Search by symbol
+        $coin = Coin::where('symbol', PriceUtil::sanitizeSymbol($coinData['symbol']))
+            ->whereNull('cmc_id')
+            ->first();
+        if ($coin !== null) {
+            return $coin;
+        }
+
+        // Search by name
+        $coin = Coin::where('name', $coinData['name'])
+            ->whereNull('cmc_id')
+            ->first();
+
+        return $coin;
+    }
+
+    public function coinCreationData(array $val)
+    {
+        // Get the crypto-compare ID
+        $ccId = (int)$val['Id'];
+
+        // Coin creation data
+        $data = [
+            'name' => $val['CoinName'],
+            'full_name' => $val['FullName'],
+            'symbol' => PriceUtil::sanitizeSymbol($val['Symbol']),
+            'image_url' => null,
+            'info_url' => null,
+            'algorithm' => $val['Algorithm'] ?? 'N/A',
+            'proof_type' => $val['ProofType'] ?? 'N/A',
+            'is_premined' => $val['FullyPremined'] === '1',
+            'premined_value' => $val['PreMinedValue'] ?? 'N/A',
+            'total_free_float' => $val['TotalCoinsFreeFloat'] ?? 'N/A',
+            'is_trading' => $val['IsTrading'] ?? true,
+        ];
+
+        switch ($ccId) {
+            case 347235:
+                // Bitcoin gold
+                $data['cmc_id'] = 'bitcoin-gold';
+                break;
+            case 4402:
+                // Bitgem
+                $data['cmc_id'] = 'bitgem';
+                break;
+            case 127356:
+                // Iota
+                $data['cmc_id'] = 'iota';
+                $data['symbol'] = PriceUtil::sanitizeSymbol('iota');
+                break;
+            case 218008:
+                // Bytom
+                $data['cmc_id'] = 'bytom';
+                break;
+            case 310497:
+                // Kyber network
+                $data['cmc_id'] = 'kyber-network';
+                break;
+            case 199901:
+                // Smart cash
+                $data['cmc_id'] = 'smartcash';
+                break;
+            default:
+                break;
+        }
+
+        return $data;
     }
 }

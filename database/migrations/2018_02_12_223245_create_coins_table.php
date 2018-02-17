@@ -31,7 +31,8 @@ class CreateCoinsTable extends Migration
     {
         Schema::create('coins', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('remote_id', 40);
+            $table->unsignedInteger('cc_id')->default(0);   // CryptoCompare ID: Eg. 1234
+            $table->string('cmc_id')->nullable();   // CMC ID: Eg. "bitcoin"
             $table->string('name', 100);
             $table->string('full_name', 255);
             $table->string('symbol', 40);
@@ -56,7 +57,7 @@ class CreateCoinsTable extends Migration
             $table->timestamp('sourced_at')->nullable();
             $table->timestamps();
 
-            $table->unique('remote_id');
+            $table->index('symbol');
         });
     }
 

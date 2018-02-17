@@ -35,4 +35,23 @@ class PriceUtil
 
         return $amount.'%';
     }
+
+    public static function formatLargeAmount($amount): string
+    {
+        $output = '';
+        if ($amount > 1000000000) {
+            // Billions
+            $output = sprintf('%sbn', number_format($amount / 1000000000, 2));
+        } elseif ($amount / 1000000){
+            // Millions
+            $output = sprintf('%sm', number_format($amount / 1000000, 2));
+        } elseif ($amount / 1000) {
+            // Thousands
+            $output = sprintf('%sk', number_format($amount / 1000000, 2));
+        } else {
+            $output = sprintf('%s', number_format($amount, 2));
+        }
+
+        return $output;
+    }
 }

@@ -83,6 +83,12 @@ class Coin extends Model
         return $this->priceMap($this->latestPrices());
     }
 
+    public function priceFor($currencySymbol)
+    {
+        $map = $this->priceMap($this->latestPrices());
+        return $map[PriceUtil::sanitizeSymbol($currencySymbol)] ?? 0;
+    }
+
     public function priceMap($priceQuery)
     {
         $map = [];
