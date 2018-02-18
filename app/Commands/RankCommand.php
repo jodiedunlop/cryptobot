@@ -15,10 +15,9 @@ class RankCommand extends AbstractCommand
 {
     /**
      * @param BotMan $bot
-     * @param string $symbol Symbol or name of coin
-     * @param string|null|mixed $date
+     * @param int $limit
      */
-    public function __invoke(BotMan $bot, int $limit = 20): void
+    public function __invoke(BotMan $bot, $limit = null): void
     {
         Log::info('Rank command');
         (new RankReply($bot))->send();

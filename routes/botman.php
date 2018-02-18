@@ -11,8 +11,8 @@ $botman->hears('(rank|top)(?:\s+(\d+))?', \App\Commands\RankCommand::class);
 $botman->hears('top(?:\s+(\d+))?', \App\Commands\RankCommand::class);
 
 // Gainers
-$botman->hears('(gainers|winners)(?:\s+(1h|24hrs|7days))?(?:\s+(\d+))?', \App\Commands\GainersCommand::class);
-$botman->hears('(gainers|winners) image(?:\s+(1h|24hrs|7days))?(?:\s+(\d+))?', \App\Commands\GainersImageCommand::class);
+$botman->hears('(gainers|winners)(?:\s+(1h|24h|7d))?(?:\s+(\d+))?', \App\Commands\GainersCommand::class);
+$botman->hears('(gainers|winners) image(?:\s+(1h|24h|7d))?(?:\s+(\d+))?', \App\Commands\GainersImageCommand::class);
 
 // Losers
 //$botman->hears('losers(?:\s+(1h|24hrs|7days))?7days(?:\s+(\d+))?', \App\Commands\GainersCommand::class);

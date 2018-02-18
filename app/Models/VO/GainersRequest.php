@@ -12,12 +12,12 @@ class GainersRequest
     protected $minRank;
     protected $maxRank;
 
-    public function __construct($period, $limit = 10, $minRank = 1, $maxRank = 200)
+    public function __construct($period, $limit = null, $minRank = null, $maxRank = 200)
     {
         $this->period = $period;
-        $this->limit = $limit;
-        $this->minRank = $minRank;
-        $this->maxRank = $maxRank;
+        $this->limit = $limit ?? 10;
+        $this->minRank = $minRank ?? 1;
+        $this->maxRank = $maxRank ?? 200;
     }
 
     public function getPeriod()
@@ -35,13 +35,13 @@ class GainersRequest
         $desc = '';
         switch ($this->getPeriod()) {
             case static::PERIOD_1H:
-                $desc = 'last hour';
+                $desc = 'hour';
                 break;
             case static::PERIOD_24H:
-                $desc = 'last 24 hours';
+                $desc = '24 hours';
                 break;
             case static::PERIOD_7D:
-                $desc = 'last 7 days';
+                $desc = '7 days';
                 break;
             default:
                 break;
