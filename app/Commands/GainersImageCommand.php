@@ -2,17 +2,19 @@
 
 namespace App\Commands;
 
+use App\Jobs\GainersImageReplyJob;
 use App\Models\VO\GainersRequest;
-use App\Replies\GainersReply;
+use App\Replies\GainersImageReply;
 use BotMan\BotMan\BotMan;
 use Illuminate\Support\Facades\Log;
 
-class GainersCommand extends AbstractCommand
+class GainersImageCommand extends AbstractCommand
 {
     /**
      * @param BotMan $bot
      * @param string|null $period
      * @param int $limit
+     * @throws \Spatie\Browsershot\Exceptions\CouldNotTakeBrowsershot
      */
     public function __invoke(BotMan $bot, string $period = null, int $limit = 10): void
     {
@@ -20,7 +22,10 @@ class GainersCommand extends AbstractCommand
             $period ?? GainersRequest::PERIOD_24H,
             $limit
         );
-        Log::info('Gainers command');
-        (new GainersReply($bot))->send($request);
+        Log::info('Gainers image command');
+//        (new GainersImageReply($bot))->send($request);
+        $bot->reply('One sec ...');
+        $bot->types();
+        GainersImageReplyJob::dispatch($bot, $request);
     }
 }

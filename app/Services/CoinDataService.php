@@ -234,6 +234,7 @@ class CoinDataService
             case 347235:
                 // Bitcoin gold
                 $data['cmc_id'] = 'bitcoin-gold';
+                $data['symbol'] = 'BTG';
                 break;
             case 4402:
                 // Bitgem
@@ -242,7 +243,7 @@ class CoinDataService
             case 127356:
                 // Iota
                 $data['cmc_id'] = 'iota';
-                $data['symbol'] = PriceUtil::sanitizeSymbol('iota');
+                $data['symbol'] = 'IOTA';
                 break;
             case 218008:
                 // Bytom
@@ -255,6 +256,39 @@ class CoinDataService
             case 199901:
                 // Smart cash
                 $data['cmc_id'] = 'smartcash';
+                break;
+            case 1217209:
+                // Nano
+                $data['cmc_id'] = 'nano';
+                $data['symbol'] = 'NANO';
+                break;
+            case 299397:
+                // Walton chain
+                $data['cmc_id'] = 'waltonchain';
+                $data['symbol'] = 'WTC';
+                break;
+//            case 000:
+//                // XPA
+//                $data['cmc_id'] = 'xpa';
+//                $data['symbol'] = 'XPA';
+//                break;
+//            case 000:
+//                // Bibox Token
+//                $data['cmc_id'] = 'bibox-token';
+//                break;
+//            case 000:
+//                // All Sports
+//                $data['cmc_id'] = 'all-sports';
+//                break;
+//            case 000:
+//                // Delphy
+//                $data['cmc_id'] = 'delphy';
+//                $data['symbol'] = 'SOC';
+//                break;
+            case 35165:
+                // Bitconnect
+                $data['cmc_id'] = 'bitconnect';
+                $data['symbol'] = 'BCC';
                 break;
             default:
                 break;

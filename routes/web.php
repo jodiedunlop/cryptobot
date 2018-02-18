@@ -20,4 +20,6 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 
 
 Route::get('/coins', 'CoinController@index');
-Route::get('/coins/image', 'CoinController@indexImage');
+Route::get('/coins/gainers', 'CoinController@gainers');
+Route::get('/coin-images', 'CoinImageController@index');
+Route::get('/coin-images/gainers', 'CoinImageController@gainers');

@@ -46,6 +46,22 @@ class Coin extends Model
         ]);
     }
 
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $period
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGainers($query, $period = '24h')
+    {
+        $changeColumn = sprintf('percent_change_%s', $period);
+        return $query->where('rank', '!=', 0)
+            ->where('rank', '<', 200)
+            ->where($changeColumn, '>', 0)
+            ->orderBy($changeColumn, 'DESC');
+    }
+
     public static function fromValueObject(\App\Models\VO\Coin $coin): Coin
     {
         if ($coin->has('id')) {
@@ -97,6 +113,19 @@ class Coin extends Model
         }
 
         return $map;
+    }
+
+    public function symbol()
+    {
+        return PriceUtil::sanitizeSymbol($this->symbol);
+    }
+
+    public function thumbUrl()
+    {
+        return $this->image_url ??
+            'https://raw.githubusercontent.com/cjdowner/cryptocurrency-icons/master/128/color/'.
+            strtolower($this->symbol()).
+            '.png';
     }
 
     /**

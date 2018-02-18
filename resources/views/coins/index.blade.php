@@ -47,7 +47,7 @@
         @foreach ($coins as $coin)
             <tr>
                 <th scope="row">{{ $coin->rank }}</th>
-                <td><img src="{{ $coin->image_url }}" height="32" class="mr-3"> {{ $coin->full_name }}</td>
+                <td><img src="{{ $coin->thumbUrl() }}" height="32" class="mr-3"> {{ $coin->full_name }}</td>
                 <td>{{ \App\Util\PriceUtil::formatDecimal($coin->priceFor('btc')) }}</td>
                 <td>${{ \App\Util\PriceUtil::formatDecimal($coin->priceFor('usd')) }}</td>
                 <td>
@@ -68,7 +68,6 @@
         @endforeach
         </tbody>
     </table>
-    {{ $coins->links() }}
 </div>
 </body>
 </html>

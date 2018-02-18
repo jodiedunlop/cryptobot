@@ -30,13 +30,13 @@ class GainersReply extends AbstractReply
     {
         $changeField = null;
         switch ($request->getPeriod()) {
-            case GainersRequest::PERIOD_1HR:
+            case GainersRequest::PERIOD_1H:
                 $changeField = 'percent_change_1h';
                 break;
-            case GainersRequest::PERIOD_24HRS:
+            case GainersRequest::PERIOD_24H:
                 $changeField = 'percent_change_24h';
                 break;
-            case GainersRequest::PERIOD_7DAYS:
+            case GainersRequest::PERIOD_7D:
                 $changeField = 'percent_change_7d';
                 break;
             default:

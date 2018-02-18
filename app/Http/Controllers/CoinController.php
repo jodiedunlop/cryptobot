@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coin;
 use Illuminate\Http\Request;
 use App\Util\PriceUtil;
+use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 
 class CoinController extends Controller
@@ -16,96 +17,30 @@ class CoinController extends Controller
      */
     public function index()
     {
-        return view('coin.index', [
-            'coins' => Coin::where('rank', '!=', 0)
-                ->orderBy('rank', 'ASC')
-                ->paginate($this->getLimit()),
+        $coins = Coin::where('rank', '!=', 0)
+            ->orderBy('rank', 'ASC')
+            ->limit($this->getLimit())
+            ->offset($this->getOffset())
+            ->get();
+
+        return view('coins.index', [
+            'coins' => $coins,
         ]);
     }
 
-    public function indexImage()
+    public function gainers()
     {
-        return response(
-            Browsershot::url(url('/coins?limit=5'))
-//                ->noSandbox()
-                ->windowSize(800, 600)
-                ->waitUntilNetworkIdle()
-                ->fullPage()
-                ->deviceScaleFactor(2)
-                ->screenshot(),
-            200,
-            [
-                'Content-Type' => 'image/png',
-            ]
-        );
+        $changePeriod = $this->getChangePeriod();
+        $coins = Coin::gainers($changePeriod)
+            ->limit($this->getLimit(10))
+            ->offset($this->getOffset())
+            ->get();
 
-//        return response($html);
+        return view('coins.gainers', compact(
+            'coins',
+            'changePeriod'
+        ));
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Coin $coin
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Coin $coin)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Coin $coin
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Coin $coin)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Models\Coin $coin
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Coin $coin)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Coin $coin
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Coin $coin)
-    {
-        //
-    }
 }

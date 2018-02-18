@@ -3,9 +3,9 @@ namespace App\Models\VO;
 
 class GainersRequest
 {
-    public const PERIOD_1HR = '1hr';
-    public const PERIOD_24HRS = '24hrs';
-    public const PERIOD_7DAYS = '7days';
+    public const PERIOD_1H = '1h';
+    public const PERIOD_24H = '24h';
+    public const PERIOD_7D = '7d';
 
     protected $period;
     protected $limit;
@@ -22,20 +22,25 @@ class GainersRequest
 
     public function getPeriod()
     {
-        return $this->period;
+        $period = '24h';
+        if ($this->period && preg_match('/^(1h|24h|7d)$/i', $this->period)) {
+            $period = strtolower($this->period);
+        }
+
+        return $period;
     }
 
     public function getPeriodDescription()
     {
         $desc = '';
         switch ($this->getPeriod()) {
-            case static::PERIOD_1HR:
+            case static::PERIOD_1H:
                 $desc = 'last hour';
                 break;
-            case static::PERIOD_24HRS:
+            case static::PERIOD_24H:
                 $desc = 'last 24 hours';
                 break;
-            case static::PERIOD_7DAYS:
+            case static::PERIOD_7D:
                 $desc = 'last 7 days';
                 break;
             default:
