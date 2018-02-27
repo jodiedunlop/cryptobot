@@ -23,7 +23,6 @@ class GainersImageCommand extends AbstractCommand
             $limit
         );
         Log::info('Gainers image command');
-//        (new GainersImageReply($bot))->send($request);
         $bot->reply('One sec ...');
         $bot->types();
         GainersImageReplyJob::dispatch($bot, $request);

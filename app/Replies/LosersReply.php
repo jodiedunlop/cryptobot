@@ -3,13 +3,13 @@
 namespace App\Replies;
 
 use App\Models\Coin;
-use App\Models\VO\GainersRequest;
+use App\Models\VO\LosersRequest;
 use App\Models\VO\PriceRequest;
 use App\Util\PriceUtil;
 use BotMan\BotMan\BotMan;
 use Illuminate\Support\Facades\Log;
 
-class GainersReply extends AbstractReply
+class LosersReply extends AbstractReply
 {
     /** @var BotMan */
     protected $bot;
@@ -22,17 +22,17 @@ class GainersReply extends AbstractReply
         $this->bot = $bot;
     }
 
-    public function send(GainersRequest $request): void
+    public function send(LosersRequest $request): void
     {
         $changeField = null;
         switch ($request->getPeriod()) {
-            case GainersRequest::PERIOD_1H:
+            case LosersRequest::PERIOD_1H:
                 $changeField = 'percent_change_1h';
                 break;
-            case GainersRequest::PERIOD_24H:
+            case LosersRequest::PERIOD_24H:
                 $changeField = 'percent_change_24h';
                 break;
-            case GainersRequest::PERIOD_7D:
+            case LosersRequest::PERIOD_7D:
                 $changeField = 'percent_change_7d';
                 break;
             default:
@@ -41,12 +41,12 @@ class GainersReply extends AbstractReply
         }
 
         /** @var Coin[] $coinList */
-        $coinList = Coin::orderBy($changeField, 'DESC')
-            ->where('rank', '>', $request->getMinRank())
-            ->where('rank', '<', $request->getMaxRank())
+        $coinList = Coin::orderBy($changeField, 'ASC')
+            ->where('rank', '>', $request->getMin())
+            ->where('rank', '<', $request->getMax())
             ->limit($request->getLimit());
 
-        $text = 'Gainers: '.$request->getPeriodDescription().":\n";
+        $text = 'Losers: '.$request->getPeriodDescription().":\n";
         foreach ($coinList->get() as $coin) {
             $text .=
                 sprintf('*#%d* %s - `$%s` `%sBTC` %s%s  Supply:`%s` | Cap:`$%s`',

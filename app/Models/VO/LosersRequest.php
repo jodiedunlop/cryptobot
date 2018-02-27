@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\VO;
 
-class GainersRequest
+class LosersRequest
 {
     public const PERIOD_1H = '1h';
     public const PERIOD_24H = '24h';
@@ -9,15 +9,15 @@ class GainersRequest
 
     protected $period;
     protected $limit;
-    protected $minRank;
-    protected $maxRank;
+    protected $min;
+    protected $max;
 
-    public function __construct($period = null, $limit = null, $minRank = null, $maxRank = 200)
+    public function __construct($period = null, $limit = null, $min = null, $max = 200)
     {
         $this->setPeriod($period);
         $this->limit = $limit ?? 10;
-        $this->minRank = $minRank ?? 1;
-        $this->maxRank = $maxRank ?? 200;
+        $this->min = $min ?? 1;
+        $this->max = $max ?? 200;
     }
 
     public function setPeriod($period)
@@ -65,13 +65,13 @@ class GainersRequest
         return $this->limit;
     }
 
-    public function getMinRank(): int
+    public function getMin(): int
     {
-        return $this->minRank;
+        return $this->min;
     }
 
-    public function getMaxRank(): int
+    public function getMax(): int
     {
-        return $this->maxRank;
+        return $this->max;
     }
 }

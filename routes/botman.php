@@ -15,7 +15,7 @@ $botman->hears('(gainers|winners)(?:\s+(1h|24h|7d))?', \App\Commands\GainersComm
 $botman->hears('(gainers|winners) image(?:\s+(1h|24h|7d))?', \App\Commands\GainersImageCommand::class);
 
 // Losers
-//$botman->hears('losers(?:\s+(1h|24hrs|7days))?7days(?:\s+(\d+))?', \App\Commands\GainersCommand::class);
+$botman->hears('losers(?:\s+(1h|24h|7d))?', \App\Commands\LosersCommand::class);
 
 
 $botman->hears('Hi', function ($bot) {

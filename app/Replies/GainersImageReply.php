@@ -2,15 +2,11 @@
 
 namespace App\Replies;
 
-use App\Models\Coin;
 use App\Models\VO\GainersRequest;
 use App\Models\VO\PriceRequest;
-use App\Services\CoinDataService;
-use App\Util\PriceUtil;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
-use function GuzzleHttp\Promise\promise_for;
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 
@@ -35,7 +31,7 @@ class GainersImageReply extends AbstractReply
     {
         $period = $request->getPeriod();
         $imgName = sprintf('gainers_%s_%s.png', $period, date('Ymd'));
-        $imgUrl = url('storage/'.$imgName);
+        $imgUrl = url('/storage/'.$imgName);
         Browsershot::url(url("/coins/gainers?period=$period"))
 //                ->noSandbox()
             ->windowSize(1280, 1024)
