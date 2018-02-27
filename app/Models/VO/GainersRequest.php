@@ -23,7 +23,7 @@ class GainersRequest
     public function getPeriod()
     {
         $period = '24h';
-        if ($this->period && preg_match('/^(1h|24h|7d)$/i', $this->period)) {
+        if ($this->period && preg_match('/^(1h|24h|7d)$/i', trim($this->period))) {
             $period = strtolower($this->period);
         }
 

@@ -38,10 +38,10 @@ class GainersImageReply extends AbstractReply
         $imgUrl = url('storage/'.$imgName);
         Browsershot::url(url("/coins/gainers?period=$period"))
 //                ->noSandbox()
-            ->windowSize(800, 600)
+            ->windowSize(1280, 1024)
             ->waitUntilNetworkIdle()
             ->fullPage()
-            ->deviceScaleFactor(2)
+//            ->deviceScaleFactor(2)
             ->save(storage_path('app/public/'.$imgName));
 
         $text = 'Gainers over the '.$request->getPeriodDescription();
