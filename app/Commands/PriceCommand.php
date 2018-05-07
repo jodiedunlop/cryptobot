@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Log;
 class PriceCommand extends AbstractCommand
 {
     /**
-     * @param BotMan $bot
      * @param string $symbol Symbol or name of coin
      * @param string|null|mixed $date
      */
-    public function __invoke(BotMan $bot, string $symbol, $date = null): void
+    public function __invoke(string $symbol, $date = null): void
     {
+        $this->bot = app('botman');
         Log::info("Price command for symbol:{$symbol}, date:{$date}");
         try {
             $coin = Coin::findOrFail($symbol);
