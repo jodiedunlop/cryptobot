@@ -7,9 +7,8 @@ abstract class AbstractCommand
 {
     protected $bot;
 
-    public function __construct(BotMan $bot)
+    public function __construct()
     {
-        $this->bot = $bot;
     }
 
     protected function replyFail()

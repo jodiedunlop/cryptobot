@@ -16,28 +16,34 @@ class PriceCommand extends AbstractCommand
      * @param string $symbol Symbol or name of coin
      * @param string|null|mixed $date
      */
-    public function __invoke(string $symbol, $date = null): void
+    public function __invoke(BotMan $bot, string $symbol, $date = null): void
     {
-        $this->bot = app('botman');
-        Log::info("Price command for symbol:{$symbol}, date:{$date}");
+        //$this->bot = app('botman');
+        Log::debug("Price command for symbol:{$symbol}, date:{$date}");
         try {
             $coin = Coin::findOrFail($symbol);
         } catch (\Exception $e) {
-            $this->bot->reply($e->getMessage());
+            $bot->reply($e->getMessage());
             return;
         }
 
         $priceRequest = new PriceRequest($coin->toValueObject());
+
         try {
             $userInfo = $bot->getUser()->getInfo();
-            $priceRequest->parseDate($date, $userInfo['tz'] ?? null);
+        } catch (\Exception $e) {
+            Log::error("Can't fetch user info: ".$e->getMessage());
+        }
+
+        try {
+            $priceRequest->parseDate($date, $userInfo['tz'] ?? 'Australia/Brisbane');
         } catch (\Exception $e) {
             Log::error("Unable to parse date: {$date}: ".$e->getMessage());
-            $this->bot->reply('Your date makes no sense to me.');
+            $bot->reply('Your date makes no sense to me.');
             return;
         }
-        $bot->reply('One sec ...');
         $bot->types();
+        $bot->reply('One sec ...');
         PriceReplyJob::dispatch($bot, $priceRequest);
     }
 }
