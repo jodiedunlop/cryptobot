@@ -19,6 +19,9 @@ class CoinDataService
     public const COIN_LIST_URL = 'https://www.cryptocompare.com/api/data/coinlist/';
     //public const COIN_LIST_URL = ''https://min-api.cryptocompare.com/data/all/coinlist';
 
+    public $priceSymbols = ['BTC', 'USD', 'EUR'];
+
+
     public function currentPrice(PriceRequest $priceRequest): Price
     {
         Log::debug("Looking up current price for {$priceRequest->symbol()}");
@@ -54,7 +57,7 @@ class CoinDataService
         if (!$priceQuery->count()) {
             $data = Zttp::get('https://min-api.cryptocompare.com/data/pricehistorical', [
                 'fsym' => $priceRequest->symbol(),
-                'tsyms' => 'BTC,USD,AUD',
+                'tsyms' => implode(',', $this->priceSymbols),
                 'ts' => $priceRequest->getTimestamp(),
             ])->json();
 
@@ -131,7 +134,7 @@ class CoinDataService
         // TODO: Chunk the fetches
         // TODO: Allow specifying a list of symbol conversions in method param (merge)
         $data = Zttp::get('https://api.coinmarketcap.com/v1/ticker/', [
-            'convert' => 'AUD',
+            'convert' => 'EUR',
             'limit' => $max,
         ])->json();
 
@@ -160,7 +163,7 @@ class CoinDataService
             $coin->save();
 
             // Add prices
-            foreach (['BTC', 'USD', 'AUD'] as $currencySymbol) {
+            foreach ($this->priceSymbols as $currencySymbol) {
                 $priceKey = strtolower("price_{$currencySymbol}");
                 if (isset($coinData[$priceKey])) {
                     $coinPrice = $coin->prices()->create([

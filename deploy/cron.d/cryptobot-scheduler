@@ -1,1 +1,1 @@
-* * * * * 	ubuntu	php /var/www/cryptobot/artisan schedule:run > /var/www/cryptobot/storage/logs/cron.log 2>&1
+*/10 * * * * 	ubuntu	php /var/www/cryptobot/artisan schedule:run > /var/www/cryptobot/storage/logs/cron.log 2>&1

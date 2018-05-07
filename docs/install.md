@@ -94,6 +94,13 @@ php artisan coins:update
 
 ## Webserver setup
 
+### Nginx
+
+```bash
+cp ./deploy/nginx/sites-available/cryptobot /etc/nginx/sites-available
+ln -s /etc/nginx/sites-available/cryptobot /etc/nginx/sites-enabled/cryptobot
+```
+
 ### Letsencrypt SSL certificate
 
 Install certbot:
@@ -110,4 +117,14 @@ Create cert:
 
 ```bash
 sudo certbot certonly --nginx -d cryptobot.meow.com.au
+```
+
+### Setup supervisor
+
+```bash
+mv deploy/supervisor.d/cryptobot-worker.conf /etc/supervisor/conf.d/
+supervisorctl reread
+cryptobot-worker: available
+supervisorctl update
+supervisorctl start cryptobot-worker:*
 ```
