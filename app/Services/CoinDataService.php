@@ -19,7 +19,7 @@ class CoinDataService
     public const COIN_LIST_URL = 'https://www.cryptocompare.com/api/data/coinlist/';
     //public const COIN_LIST_URL = ''https://min-api.cryptocompare.com/data/all/coinlist';
 
-    public $priceSymbols = ['BTC', 'USD', 'EUR'];
+    public $priceSymbols = ['BTC', 'USD', 'ETH'];
 
 
     public function currentPrice(PriceRequest $priceRequest): Price
@@ -134,7 +134,7 @@ class CoinDataService
         // TODO: Chunk the fetches
         // TODO: Allow specifying a list of symbol conversions in method param (merge)
         $data = Zttp::get('https://api.coinmarketcap.com/v1/ticker/', [
-            'convert' => 'EUR',
+            'convert' => 'ETH',
             'limit' => $max,
         ])->json();
 
