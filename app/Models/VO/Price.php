@@ -1,8 +1,8 @@
 <?php
 namespace App\Models\VO;
 
-use App\Util\PriceUtil;
 use Carbon\Carbon;
+use App\Models\Coin;
 
 class Price
 {
@@ -53,17 +53,6 @@ class Price
     public function getPrice(string $priceSymbol): ?string
     {
         return $this->prices[strtoupper($priceSymbol)] ?? null;
-    }
-
-    /**
-     * @param string $symbol
-     * @return $this
-     */
-    public function setSymbol(string $symbol)
-    {
-        $this->symbol = PriceUtil::sanitizeSymbol($symbol);
-
-        return $this;
     }
 
     /**
@@ -120,7 +109,7 @@ class Price
         return $this;
     }
 
-    public function getCoin()
+    public function getCoin(): Coin
     {
         return $this->coin;
     }

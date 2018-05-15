@@ -9,7 +9,6 @@ use App\Models\VO\Price;
 use App\Models\VO\PriceRequest;
 use App\Util\PriceUtil;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Zttp\Zttp;
@@ -26,7 +25,7 @@ class CoinDataService
     {
         Log::debug("Looking up current price for {$priceRequest->symbol()}");
 
-        $coin = Coin::fromValueObject($priceRequest->getCoin());
+        $coin = $priceRequest->getCoin();
         $prices = $coin->latestPriceMap();
         Log::debug("Got prices for {$priceRequest->symbol()}:", $prices);
 
@@ -47,7 +46,7 @@ class CoinDataService
         ]);
 
         // Ensure it's a valid coin
-        $coin = Coin::fromValueObject($priceRequest->getCoin());
+        $coin = $priceRequest->getCoin();
 
         // See if there's a price collected before or equal to the requested date,
         // but not 5 minutes older than that

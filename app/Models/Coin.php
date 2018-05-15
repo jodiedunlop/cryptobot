@@ -32,20 +32,6 @@ class Coin extends Model
         'sourced_at',
     ];
 
-    public function toValueObject()
-    {
-        return new \App\Models\VO\Coin($this->symbol, [
-            'name' => $this->name,
-            'full_name' => $this->full_name,
-            'image_url' => $this->image_url,
-            'info_url' => $this->info_url,
-            'percent_change_1h' => $this->percent_change_1h,
-            'percent_change_24h' => $this->percent_change_24h,
-            'percent_change_7d' => $this->percent_change_7d,
-            'rank' => $this->rank,
-        ]);
-    }
-
     /**
      * Scope a query to only include popular users.
      *
@@ -60,15 +46,6 @@ class Coin extends Model
             ->where('rank', '<', 200)
             ->where($changeColumn, '>', 0)
             ->orderBy($changeColumn, 'DESC');
-    }
-
-    public static function fromValueObject(\App\Models\VO\Coin $coin): Coin
-    {
-        if ($coin->has('id')) {
-            return static::findOrFail($coin->id);
-        }
-        return static::findBySymbolOrFail($coin->symbol());
-
     }
 
     public function prices(): HasMany
@@ -87,7 +64,7 @@ class Coin extends Model
      * @param int $windowMinutes
      * @return Builder
      */
-    public function pricesAt(Carbon $date, int $windowMinutes = 5)
+    public function pricesAt(Carbon $date, int $windowMinutes = 5): Builder
     {
         return $this->prices()
             ->where('sourced_at', '<=', $date)
@@ -117,7 +94,7 @@ class Coin extends Model
 
     public function symbol()
     {
-        return PriceUtil::sanitizeSymbol($this->symbol);
+        return PriceUtil::sanitizeSymbol($this->attributes['symbol']);
     }
 
     public function thumbUrl()
@@ -127,6 +104,7 @@ class Coin extends Model
             strtolower($this->symbol()).
             '.png';
     }
+
 
     /**
      * @param string $symbol
@@ -155,16 +133,16 @@ class Coin extends Model
      * @param string $str
      * @return Coin|null
      */
-    public static function find(string $str): ?Coin
+    public static function fuzzyFind(string $str): ?Coin
     {
         $coin = static::findBySymbol($str);
         if ($coin === null) {
             // Try by name
-            $coin = Coin::where('name', $str)->first();
+            $coin = static::where('name', $str)->first();
         }
         if ($coin === null) {
             // Try by name
-            $coin = Coin::where('name', 'like', $str.'%')
+            $coin = static::where('name', 'like', $str.'%')
                 ->orderBy(DB::raw('LENGTH(name)'), 'DESC')
                 ->first();
         }
@@ -172,9 +150,9 @@ class Coin extends Model
         return $coin;
     }
 
-    public static function findOrFail(string $str): Coin
+    public static function fuzzyFindOrFail(string $str): Coin
     {
-        $coin = static::find($str);
+        $coin = static::fuzzyFind($str);
         if ($coin === null) {
             throw new ModelNotFoundException("Can't find that coin: '{$str}''");
         }

@@ -35,12 +35,15 @@ class GainersRequest
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPeriod()
     {
         return $this->period;
     }
 
-    public function getPeriodDescription()
+    public function getPeriodDescription(): string
     {
         $desc = '';
         switch ($this->getPeriod()) {

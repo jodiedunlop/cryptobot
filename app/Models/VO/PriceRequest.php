@@ -1,9 +1,9 @@
 <?php
 namespace App\Models\VO;
 
-use App\Util\PriceUtil;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Models\Coin;
 
 class PriceRequest
 {
