@@ -23,7 +23,7 @@ class NewGameCommand extends AbstractCommand
             /** @var GameService $gameService */
             $gameService = resolve(GameService::class);
             $platformId = $bot->getMessage()->getRecipient();
-            if ($platformId[0] !== 'C') {
+            if ($platformId[0] === 'D') {
                 throw new GameException('I only accept new game requests within channels');
             }
 
