@@ -13,4 +13,9 @@ class PlayerTrade extends Model
     {
         return $this->belongsTo(Player::class);
     }
+
+    public function coin(): BelongsTo
+    {
+        return $this->belongsTo(Coin::class);
+    }
 }
