@@ -22,7 +22,7 @@ class BuyCoinCommand extends AbstractGameCommand
             $player = $this->requiredPlayer();
 
             // Get relevant coin
-            $coin = Coin::findBySymbolOrFail($coinSymbol);
+            $coin = Coin::fuzzyFindOrFail($coinSymbol);
 
             $playerTrade = $this->gameService()->addBuy($player, $coin, $amount);
             $bot->reply("You bought $amount {$coin->symbol()}", [

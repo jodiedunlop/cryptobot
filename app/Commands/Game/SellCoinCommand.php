@@ -19,7 +19,7 @@ class SellCoinCommand extends AbstractGameCommand
             $player = $this->requiredPlayer();
 
             // Get relevant coin
-            $coin = Coin::findBySymbolOrFail($coinSymbol);
+            $coin = Coin::fuzzyFindOrFail($coinSymbol);
 
             $playerTrade = $this->gameService()->addSell($player, $coin, $amount);
             $bot->reply("You sold $amount {$coin->symbol()}", [
