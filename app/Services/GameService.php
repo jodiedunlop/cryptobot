@@ -164,11 +164,10 @@ class GameService
 
         // Determine the price of the amount to buy
         $coinPrice = $this->getPriceOfCoin($coin);
-        if ($coinPrice <= 0.0) {
+        $totalAmount = $coinPrice * $buyAmount;
+        if ($totalAmount <= 0.0) {
             throw new TradeException("Sorry {$player->name}, but {$coin->symbol()} is f*ing worthless");
         }
-
-        $totalAmount = $coinPrice * $buyAmount;
 
         // Check that the user has enough funds to buy
         $availableAmount = $this->getTransactionBalance($player);
@@ -223,10 +222,10 @@ class GameService
 
         // Determine the price of the amount to sell
         $coinPrice = $this->getPriceOfCoin($coin);
-        if ($coinPrice <= 0.0) {
+        $totalAmount = $coinPrice * $sellAmount;
+        if ($totalAmount <= 0.0) {
             throw new TradeException("Sorry {$player->name}, but {$coin->symbol()} is f*ing worthless");
         }
-        $totalAmount = $coinPrice * $sellAmount;
 
         // Execute the trade to sell
         $trade = $this->addTrade(
