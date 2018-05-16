@@ -85,12 +85,8 @@ class GameStatusReply extends AbstractReply implements ShouldQueue
         $attachments[] = [
             'fields' => [
                 [
-                    "title" => 'Time Remaining',
-                    "value" => ':hourglass: '.$this->game->finishes_at->diffForHumans(),
-                ],
-                [
-                    "title" => 'Total Duration',
-                    "value" => $this->game->created_at->diffForHumans($this->game->finishes_at),
+                    "value" => ':hourglass: Finishes '.$this->game->finishes_at->timezone('Australia/Brisbane')->format('H:ia, D jS M'),
+                    "short" => true,
                 ],
             ],
         ];

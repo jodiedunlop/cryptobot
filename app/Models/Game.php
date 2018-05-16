@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $started_by_player_id
  * @property double $start_balance
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $started_at
  * @property \Carbon\Carbon $finishes_at
  */
 class Game extends Model
