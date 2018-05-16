@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 
 class GameService
 {
+    public const MAX_TRADE_AMOUNT = 1000000;
 
     public function list(array $filters = []): Builder
     {
@@ -157,9 +158,16 @@ class GameService
         $this->checkCanAddTransaction($player->game);
 
         $buyAmount = abs($buyAmount);
+        if ($buyAmount > self::MAX_TRADE_AMOUNT) {
+            throw new TradeException("Sorry {$player->name}, but the max trade amount per transaction is ".self::MAX_TRADE_AMOUNT);
+        }
 
         // Determine the price of the amount to buy
         $coinPrice = $this->getPriceOfCoin($coin);
+        if ($coinPrice <= 0) {
+            throw new TradeException("Sorry {$player->name}, but {$coin->symbol()} is f*ing worthless");
+        }
+
         $totalAmount = $coinPrice * $buyAmount;
 
         // Check that the user has enough funds to buy
@@ -203,6 +211,9 @@ class GameService
         $this->checkCanAddTransaction($player->game);
 
         $sellAmount = abs($sellAmount);
+        if ($sellAmount > self::MAX_TRADE_AMOUNT) {
+            throw new TradeException("Sorry {$player->name}, but the max trade amount per transaction is ".self::MAX_TRADE_AMOUNT);
+        }
 
         // Check that the user has enough of this coin to sell
         $availableAmount = $this->getCoinBalance($player, $coin);
@@ -212,6 +223,9 @@ class GameService
 
         // Determine the price of the amount to sell
         $coinPrice = $this->getPriceOfCoin($coin);
+        if ($coinPrice <= 0) {
+            throw new TradeException("Sorry {$player->name}, but {$coin->symbol()} is f*ing worthless");
+        }
         $totalAmount = $coinPrice * $sellAmount;
 
         // Execute the trade to sell
