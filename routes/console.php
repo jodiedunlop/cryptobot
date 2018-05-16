@@ -29,3 +29,18 @@ Artisan::command('coins:update-prices', function () {
     $numCoinsUpdated = $service->updateCoinPrices();
     $this->comment = "Updated $numCoinsUpdated coins";
 })->describe('Fetch and update the coins list');
+
+Artisan::command('game:broadcast', function () {
+    /** @var \App\Services\GameService $service */
+    $service = resolve(\App\Services\GameService::class);
+
+    // Make sure there is an active game
+    $game = $service->getCurrentGame();
+    if ($game === null) {
+        return;
+    }
+
+    /** @var \BotMan\BotMan\BotMan $botman */
+    $botman = resolve('botman');
+    (new \App\Replies\Game\GameStatusReply($botman, $game))->handle();
+})->describe('Send game status update for active game');

@@ -23,4 +23,5 @@ $botman->hears('sell (max|all|[\d\.]+) (\w+)', \App\Commands\Game\SellCoinComman
 $botman->hears('(?:funds|balance)', \App\Commands\Game\FundsCommand::class);
 $botman->hears('portfolio', \App\Commands\Game\PortfolioCommand::class);
 $botman->hears('trades', \App\Commands\Game\TradesCommand::class);
+$botman->hears('game(?:\s*status)?', \App\Commands\Game\GameStatusCommand::class);
 $botman->hears('leaderboard', \App\Commands\Game\LeaderboardCommand::class);

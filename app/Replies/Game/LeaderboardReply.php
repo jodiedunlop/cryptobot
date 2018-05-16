@@ -42,7 +42,7 @@ class LeaderboardReply extends AbstractReply implements ShouldQueue
 
         $attachments = [];
         $position = 0;
-        $colours = ['#FFBBCA','#FA7EA8','#F66D9B','#EB5286','#6F213F','#451225'];
+        $colours = ['#2779BD', '#3490DC', '#6CB2EB', '#BCDEFA', '#EFF8FF'];
         foreach ($gameService->getLeaderboard($this->game) as $entry) {
             $position++;
 
@@ -58,8 +58,6 @@ class LeaderboardReply extends AbstractReply implements ShouldQueue
                     ' | Portfolio Value: $'.number_format($entry['portfolio_value'], 2)
             ];
         }
-
-        Log::debug($attachments);
 
         $this->bot->reply('Current leaderboard', [
             'attachments' => json_encode($attachments),

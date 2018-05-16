@@ -23,11 +23,11 @@ class CoinDataService
 
     public function currentPrice(PriceRequest $priceRequest): Price
     {
-        Log::debug("Looking up current price for {$priceRequest->symbol()}");
+//        Log::debug("Looking up current price for {$priceRequest->symbol()}");
 
         $coin = $priceRequest->getCoin();
         $prices = $coin->latestPriceMap();
-        Log::debug("Got prices for {$priceRequest->symbol()}:", $prices);
+//        Log::debug("Got prices for {$priceRequest->symbol()}:", $prices);
 
         return new Price($priceRequest->getCoin(), $prices, $coin->sourced_at);
     }
@@ -145,7 +145,7 @@ class CoinDataService
                 Log::warning('Cannot update coin price, not in database:', $coinData);
                 continue;
             }
-            Log::debug("Updating coin data and prices for {$coin->symbol}", $coinData);
+//            Log::debug("Updating coin data and prices for {$coin->symbol}", $coinData);
 
             // Update coin info
             $coin->cmc_id = (string)$coinData['id'];
@@ -170,7 +170,7 @@ class CoinDataService
                         'price' => $coinData[$priceKey],
                         'sourced_at' => $sourced_at,
                     ]);
-                    Log::debug("Coin price added to {$coin->symbol}", $coinPrice->toArray());
+//                    Log::debug("Coin price added to {$coin->symbol}", $coinPrice->toArray());
                 }
             }
             $numCoinsUpdated++;
