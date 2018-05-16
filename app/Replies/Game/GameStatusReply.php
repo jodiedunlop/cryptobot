@@ -46,6 +46,8 @@ class GameStatusReply extends AbstractReply implements ShouldQueue
         $last = $leaderboard->pop();
 
         $attachments = [];
+
+        // Add player in first place
         if ($first !== null) {
             $attachments[] = [
                 'fallback' => "{$first['player_name']} is first with total {$first['total']}",
@@ -56,7 +58,8 @@ class GameStatusReply extends AbstractReply implements ShouldQueue
             ];
         }
 
-        $otherPlayers = $leaderboard->take(5);
+        // Provide the position of up to 20 of the other players
+        $otherPlayers = $leaderboard->take(20);
         if ($otherPlayers->count()) {
             $playerPosition = 2;
             $attachments[] = [
@@ -68,6 +71,7 @@ class GameStatusReply extends AbstractReply implements ShouldQueue
             ];
         }
 
+        // Show the last place for the funz
         if ($last !== null) {
             $attachments[] = [
                 'fallback' => "{$last['player_name']} is last with total {$last['total']}",
