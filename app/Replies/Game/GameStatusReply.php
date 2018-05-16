@@ -82,7 +82,7 @@ class GameStatusReply extends AbstractReply implements ShouldQueue
             ];
         }
 
-        $arrachments[] = [
+        $attachments[] = [
             'fields' => [
                 [
                     "title" => 'Time Remaining',
@@ -92,7 +92,6 @@ class GameStatusReply extends AbstractReply implements ShouldQueue
                     "title" => 'Total Duration',
                     "value" => $this->game->created_at->diffForHumans($this->game->finishes_at),
                 ],
-                // TODO: Add total trades
             ],
         ];
 
