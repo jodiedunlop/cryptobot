@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('coins:update-prices')->everyTenMinutes()->withoutOverlapping();
 
         // Game status update
-        $schedule->command('game:broadcast')->hourly();
+        $schedule->command('game:broadcast')->cron('0 */4 * * *');
     }
 
     /**
